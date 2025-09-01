@@ -40,6 +40,7 @@ export default function BookScreen({ navigation }) {
   const dispatch = useDispatch();
   const selectedBook = useSelector((state) => state.bookSelected.selectedBook);
 
+  //Récupère l'ID du livre sélectionné
   useEffect(() => {
     const reduxBookId = selectedBook._id;
     setBookId(reduxBookId);
@@ -47,7 +48,7 @@ export default function BookScreen({ navigation }) {
 
   useEffect(() => {
     if (!bookId) return;
-
+    //Va chercher les infos du livre pour affichage
     fetch(`${backendAdress}/books/${bookId}`)
       .then((res) => res.json())
       .then((data) => {
@@ -56,9 +57,6 @@ export default function BookScreen({ navigation }) {
         } else {
           setBookData(data);
         }
-      })
-      .catch((err) => {
-        console.log("Erreur lors du fetch :", err);
       });
 
     fetch(`${backendAdress}/reviews/${bookId}`)
@@ -67,12 +65,10 @@ export default function BookScreen({ navigation }) {
         setAllReviews(data.reviews || []);
         setAverageRating(data.averageRating);
         setTotalReviews(data.reviews.length);
-      })
-      .catch((err) => {
-        console.log("Erreur lors du fetch des avis :", err);
       });
   }, [bookId]);
 
+  //Ajout d'un livre à la bibliothèque perso
   const handleSaveToUserLibrary = () => {
     if (!selectedCategory || !bookId) return;
 
@@ -102,9 +98,6 @@ export default function BookScreen({ navigation }) {
           setBookId(null);
           setLibMsg("");
         }, 900);
-      })
-      .catch((err) => {
-        console.log("Erreur userLibrary :", err.message);
       });
   };
 
@@ -136,9 +129,6 @@ export default function BookScreen({ navigation }) {
             setAverageRating(data.averageRating);
             setTotalReviews(data.reviews.length);
           });
-      })
-      .catch((err) => {
-        console.log("Erreur lors de l'envoi de l'avis :", err);
       });
   };
 

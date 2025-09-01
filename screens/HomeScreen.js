@@ -24,7 +24,6 @@ const myip = process.env.MY_IP;
 const backendAdress = `${myip}`;
 
 export default function HomeScreen({ navigation }) {
-
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
@@ -40,8 +39,6 @@ export default function HomeScreen({ navigation }) {
   };
 
   const handleSignUp = () => {
-    //console.log("handleSignUp appelée")
-
     let hasError = false;
 
     if (email === "") {
@@ -63,8 +60,6 @@ export default function HomeScreen({ navigation }) {
       setPasswordError("");
     }
 
-    // si erreur : pas de fetch
-    // console.log("hasError:", hasError);
     if (hasError) {
       return;
     }
@@ -112,7 +107,6 @@ export default function HomeScreen({ navigation }) {
       setPasswordError("");
     }
 
-    // si erreur : pas de fetch
     if (hasError) {
       return;
     }

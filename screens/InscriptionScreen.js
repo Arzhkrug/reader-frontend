@@ -27,6 +27,8 @@ export default function InscriptionScreen({ navigation }) {
   const [photo, setPhoto] = useState(null);
   const token = useSelector((state) => state.user.value.token);
   const dispatch = useDispatch();
+
+  //Ajout des infos utilisateur
   const handleProfileUpdate = () => {
     let hasError = false;
 
@@ -37,12 +39,10 @@ export default function InscriptionScreen({ navigation }) {
       setUsernameError("");
     }
 
-    // si erreur : pas de fetch
     if (hasError) {
       return;
     }
 
-    // console.log("token:", token)
     fetch(`${backendAdress}/users/${token}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -72,6 +72,7 @@ export default function InscriptionScreen({ navigation }) {
       });
   };
 
+  //Selection de l'avatar
   const pickImage = () => {
     ImagePicker.requestMediaLibraryPermissionsAsync().then(
       (permissionResult) => {

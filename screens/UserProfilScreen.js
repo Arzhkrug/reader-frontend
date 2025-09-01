@@ -54,7 +54,7 @@ export default function UserProfilScreen({ navigation }) {
       .then((res) => res.json())
       .then((data) => {
         setPosts(data.posts || []);
-      })
+      });
   };
 
   // Premier chargement
@@ -119,9 +119,9 @@ export default function UserProfilScreen({ navigation }) {
             } else {
               console.log("MAJ avatar posts OK:", data.modifiedCount);
             }
-            setRefreshKey((k) => k + 1);
+            fetchUserPosts();
           });
-      })
+      });
   };
 
   return (
@@ -145,9 +145,9 @@ export default function UserProfilScreen({ navigation }) {
             style={styles.avatar}
           />
         </TouchableOpacity>
-        
-          <Text style={styles.followersText}> ♥︎ 77 Followers</Text>
-        
+
+        <Text style={styles.followersText}> ♥︎ 77 Followers</Text>
+
         <Text style={styles.userStatut}>{user.statut}</Text>
       </View>
 
@@ -209,7 +209,6 @@ export default function UserProfilScreen({ navigation }) {
                 userToken={token}
                 currentUsername={user.username}
                 currentUserPic={user.profilPicture}
-                refreshKey={refreshKey}
                 onRefresh={fetchUserPosts}
               />
             ) : (
@@ -238,7 +237,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#E8DCCA",
     borderBlockColor: "#FCF8F1",
   },
-  userStatut: { fontFamily: interFontsToUse.bold, color: "#0E0E66", paddingTop:5},
+  userStatut: {
+    fontFamily: interFontsToUse.bold,
+    color: "#0E0E66",
+    paddingTop: 5,
+  },
   profileSection: { alignItems: "center", marginTop: 50 },
   username: {
     fontSize: 22,
@@ -283,6 +286,5 @@ const styles = StyleSheet.create({
     color: "#0E0E66",
     fontWeight: "500",
     opacity: 0.4,
-    
   },
 });

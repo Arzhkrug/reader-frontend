@@ -22,23 +22,23 @@ export default function BookLibraryScreen({ navigation }) {
   const dispatch = useDispatch();
   const [books, setBooks] = useState([]);
   const [deleteMode, setDeleteMode] = useState(false);
-  const [booksWithCount, setBooksWithCount] = useState([]);
   const token = useSelector((state) => state.user.value.token);
   const category = "Livres";
 
   useEffect(() => {
+    //Récupère tous les Livres de l'utilisateur pour affichage
     fetch(`${backendAdress}/userLibrary/${token}/Livres`)
       .then((response) => response.json())
       .then((userData) => {
-        console.log('data reçue:', userData);
-        const userBooks = userData.map(item => item.book);
+        console.log("data reçue:", userData);
+        const userBooks = userData.map((item) => item.book);
         setBooks(userBooks);
-      
+
         fetch(`${backendAdress}/userLibrary/Livres`)
           .then((response) => response.json())
           .then((allData) => {
-            console.log('data reçue:', allData);
-            const allBooks = allData.map(item => item.book);
+            console.log("data reçue:", allData);
+            const allBooks = allData.map((item) => item.book);
 
             const countMap = {};
 
@@ -52,13 +52,13 @@ export default function BookLibraryScreen({ navigation }) {
             const booksWithCount = userBooks.map((book) => {
               return {
                 ...book,
-                count: countMap[book.title] 
+                count: countMap[book.title],
               };
             });
 
             setBooks(booksWithCount);
-          })  
-      })   
+          });
+      });
   }, []);
 
   const handleBookPress = (book) => {
@@ -94,50 +94,55 @@ export default function BookLibraryScreen({ navigation }) {
       </View>
 
       <ScrollView
-              contentContainerStyle={styles.content}
-              showsVerticalScrollIndicator={true}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={true}
+      >
+        {books.length === 0 ? (
+          <View style={styles.resultNotFound}>
+            <TouchableOpacity onPress={() => navigation.navigate("Search")}>
+              <Text style={styles.resultNotFoundText}>
+                Ajoute ton premier Livre ♥︎
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          books.map((book, i) => (
+            <TouchableOpacity
+              key={i}
+              style={styles.bookContainer}
+              onPress={() => handleBookPress(book)}
             >
-              {books.length === 0 ? (
-                  <View style={styles.resultNotFound} >
-                    <TouchableOpacity onPress={() => navigation.navigate("Search")}>
-                      <Text style={styles.resultNotFoundText}>
-                        Ajoute ton premier Livre ♥︎
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-            ) : (
-              books.map((book, i) => (
-                  <TouchableOpacity 
-                  key={i}
-                  style={styles.bookContainer}
-                  onPress={() => handleBookPress(book)}
-                  >
-                {deleteMode && (
-                  <TouchableOpacity
-                    onPress={() => handleDelete(book._id)}
-                    style={styles.trashIcon}
-                  >
-                    <FontAwesome name="trash" size={20} color="#ff0000ff" />
-                  </TouchableOpacity>
-                )}
+              {deleteMode && (
+                <TouchableOpacity
+                  onPress={() => handleDelete(book._id)}
+                  style={styles.trashIcon}
+                >
+                  <FontAwesome name="trash" size={20} color="#ff0000ff" />
+                </TouchableOpacity>
+              )}
 
-                    <View style={styles.bookInfosContainer}>
-                      <Text style={styles.title}>{book.title}</Text>
-                      <Text style={styles.author}>{book.author}</Text>
-                      <Text style={styles.parutionDate}>{book.publishedDate}</Text>
-                      <Text style={styles.counter}>
-                        PRÉSENT DANS <Text style={styles.counterBold}>{book.count}</Text> BIBLIOTHÈQUE{book.count > 1 ? 'S' : ''} SUR READER.
-                      </Text>
-                    </View>
-                    {book.cover ? (
-                        <Image source={{uri: book.cover}} style={styles.image} />
-                      ) : (
-                        <Image source={require('../assets/images/notAvailable.jpg')} style={styles.image} />
-                      )}
-                  </TouchableOpacity>
-              ))
-            )}
-            </ScrollView>
+              <View style={styles.bookInfosContainer}>
+                <Text style={styles.title}>{book.title}</Text>
+                <Text style={styles.author}>{book.author}</Text>
+                <Text style={styles.parutionDate}>{book.publishedDate}</Text>
+                <Text style={styles.counter}>
+                  PRÉSENT DANS{" "}
+                  <Text style={styles.counterBold}>{book.count}</Text>{" "}
+                  BIBLIOTHÈQUE{book.count > 1 ? "S" : ""} SUR READER.
+                </Text>
+              </View>
+              {book.cover ? (
+                <Image source={{ uri: book.cover }} style={styles.image} />
+              ) : (
+                <Image
+                  source={require("../assets/images/notAvailable.jpg")}
+                  style={styles.image}
+                />
+              )}
+            </TouchableOpacity>
+          ))
+        )}
+      </ScrollView>
 
       <TouchableOpacity
         style={styles.returnBtn}

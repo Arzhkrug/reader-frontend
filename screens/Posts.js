@@ -24,14 +24,10 @@ export default function Posts({
   refreshKey,
   navigation,
 }) {
-
   const [modalVisible, setModalVisible] = useState(null);
   const [commentVisible, setCommentVisible] = useState(null);
   const [commentText, setCommentText] = useState("");
   const [liked, setLiked] = useState({});
-  const [list, setList] = useState(posts);
-
-  useEffect(() => setList(posts), [posts]);
   const user = useSelector((state) => state.user.value);
 
   //liker un post
@@ -57,7 +53,7 @@ export default function Posts({
     }).then(() => {
       setCommentText("");
       setCommentVisible(null);
-      onRefresh();
+      if (onRefresh) onRefresh();
     });
   };
 
@@ -69,7 +65,7 @@ export default function Posts({
       .then((data) => {
         setModalVisible(null);
         if (data.result && onRefresh) onRefresh();
-      })
+      });
   };
 
   return (

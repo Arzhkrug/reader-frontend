@@ -8,14 +8,13 @@ import {
   Dimensions,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { interFontsToUse } from '../assets/fonts/fonts';
+import { interFontsToUse } from "../assets/fonts/fonts";
 import { useSelector, useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 
 //const backendAdress = process.env.EXPO_PUBLIC_URL_BACKEND;
 const myip = process.env.MY_IP;
 const backendAdress = `${myip}`;
-
 
 export default function SettingsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
@@ -28,38 +27,40 @@ export default function SettingsScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [isPublic, setIsPublic] = useState(true);
 
+  // Mise à jour des infos utilisateur
+  const handleUpdate = () => {
+    fetch(`${backendAdress}/users/${user.token}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        username,
+        statut: statutL,
+        mode: isPublic ? "Public" : "Privé",
+        password: password || undefined,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.result) {
+          dispatch(
+            login({
+              email: data.updatedUser.email, // updatedUser : la data reçue dans la route PUT users
+              username: data.updatedUser.username,
+              statut: data.updatedUser.statut,
+              profilPicture: data.updatedUser.profilPicture,
+            })
+          );
+          console.log("Modification mise à jour avec succès");
+          navigation.navigate("TabNavigator");
+        } else {
+          console.log("Erreur à la modification");
+        }
+      });
+  };
 
-    const handleUpdate = () => {
-        fetch(`${backendAdress}/users/${user.token}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email,
-                username,
-                statut: statutL,
-                mode: isPublic ? "Public" : "Privé",
-                password: password || undefined,
-            }),
-        })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-                if (data.result) {
-                    dispatch(login({
-                        email: data.updatedUser.email, // updatedUser : la data reçue dans la route PUT users
-                        username: data.updatedUser.username,
-                        statut: data.updatedUser.statut,
-                        profilPicture: data.updatedUser.profilPicture,
-                    }));
-                    console.log('Modification mise à jour avec succès');
-                    navigation.navigate("TabNavigator");
-                } else {
-                    console.log('Erreur à la modification');
-                }
-            });
-    };
-
- 
+  // Suppression compte utilisateur
   const handleDelete = () => {
     fetch(`${backendAdress}/users/${user.email}`, {
       method: "DELETE",
@@ -156,14 +157,14 @@ export default function SettingsScreen({ navigation }) {
         autoCapitalize="none"
       />
 
-            <Text style={styles.label}>Mot de passe</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Entrez le nouveau mot de passe"
-                secureTextEntry={true}
-                value={password}
-                onChangeText={setPassword}
-            />
+      <Text style={styles.label}>Mot de passe</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Entrez le nouveau mot de passe"
+        secureTextEntry={true}
+        value={password}
+        onChangeText={setPassword}
+      />
 
       <View style={styles.actionsContainer}>
         <TouchableOpacity style={styles.validateButton} onPress={handleUpdate}>
@@ -327,7 +328,7 @@ const styles = StyleSheet.create({
     fontFamily: interFontsToUse.regular,
     fontSize: 12,
   },
-   pickerContainer: {
+  pickerContainer: {
     width: 180,
     height: 150,
     borderWidth: 1,

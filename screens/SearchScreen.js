@@ -26,7 +26,7 @@ export default function SearchScreen({ navigation }) {
   const dispatch = useDispatch();
 
   const handleSearch = () => {
-    // Recherche par catégorie → route userlibrary
+    // Recherche par catégorie
     if (category) {
       const validCategories = ["Livres", "BD", "Mangas"];
       let matchedCategory = null;
@@ -69,7 +69,7 @@ export default function SearchScreen({ navigation }) {
       return;
     }
 
-    // Sinon recherche par auteur/titre → route books
+    // Recherche par auteur/titre
     const params = new URLSearchParams();
     if (author) params.append("author", author);
     if (title) params.append("title", title);

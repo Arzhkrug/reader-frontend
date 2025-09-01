@@ -39,7 +39,7 @@ export default function BookedexScreen({ navigation }) {
 
   if (!hasPermission) return <View style={styles.container} />;
 
-  //fonction saveBookToDB qui sera rappelée lors du fetchBookData
+  //Ajout d'un nouveau livre dans la DB après scan
   const saveBookToDB = (bookToSave) => {
     fetch(`${backendAdress}/books`, {
       method: "POST",
@@ -49,7 +49,7 @@ export default function BookedexScreen({ navigation }) {
       .then((res) => res.json())
       .then((data) => {
         if (data.error && data.existingBookId) {
-          // Si le livre existe déjà on passe direct à la modale de catégorie
+          // Si le livre existe déjà
           console.log("Livre déjà en base, ID :", data.existingBookId);
           setDbInfoMsg("Livre déjà présent dans Reader.");
           setFetchedBookId(data.existingBookId);
@@ -58,7 +58,7 @@ export default function BookedexScreen({ navigation }) {
           setModalVisible(false);
           setSecondModalVisible(true);
         } else if (data._id) {
-          // Si nouveau livre on enchaîne normalement
+          // Si nouveau livre
           console.log("Livre ajouté :", data._id);
           setDbInfoMsg("Livre enregistré dans Reader.");
           setFetchedBookId(data._id);
@@ -126,6 +126,7 @@ export default function BookedexScreen({ navigation }) {
       });
   };
 
+  //ISBN détecté par le scan
   const handleScan = (result) => {
     if (!scannedCode && result?.data) {
       setScannedCode(result.data);
@@ -133,6 +134,7 @@ export default function BookedexScreen({ navigation }) {
     }
   };
 
+  //Bouton d'ajout à la bibliothèque
   const handleAddToLibrary = () => {
     fetchBookData(scannedCode);
     console.log("Ajout à la bibliothèque :", scannedCode);
@@ -140,11 +142,13 @@ export default function BookedexScreen({ navigation }) {
     setScannedCode(null);
   };
 
+  //Bouton croix
   const handleReset = () => {
     setScannedCode(null);
     setModalVisible(false);
   };
 
+  //Ajout du livre à la bibliothèque perso
   const handleSaveToUserLibrary = () => {
     if (!selectedCategory || !fetchedBookId) return;
 

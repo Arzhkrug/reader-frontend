@@ -46,12 +46,14 @@ export default function GeneralScreen({ navigation }) {
     }, [userToken])
   );
 
+  //Récupère tous les posts pour affichage
   const fetchAllPosts = () => {
     fetch(`${backendAdress}/posts`)
       .then((res) => res.json())
       .then((data) => setAllPosts(data.posts || []));
   };
 
+  //Publication d'un post
   const addPost = () => {
     fetch(`${backendAdress}/posts`, {
       method: "POST",
@@ -67,6 +69,7 @@ export default function GeneralScreen({ navigation }) {
       });
   };
 
+  //Publication story
   const openSystemCamera = () => {
     ImagePicker.requestCameraPermissionsAsync()
       .then((permission) => {
@@ -186,10 +189,7 @@ export default function GeneralScreen({ navigation }) {
           onRefresh={() => {
             fetch(`${backendAdress}/posts`)
               .then((res) => res.json())
-              .then((data) => setAllPosts(data.posts || []))
-              .catch((error) =>
-                console.log("Erreur lors du fetch des posts :", error)
-              );
+              .then((data) => setAllPosts(data.posts || []));
           }}
         />
       </ScrollView>
