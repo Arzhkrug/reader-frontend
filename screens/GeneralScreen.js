@@ -28,7 +28,6 @@ export default function GeneralScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [post, setPost] = useState("");
   const [allPosts, setAllPosts] = useState([]);
-  const [refreshKey, setRefreshKey] = useState(0);
   const [storyPhoto, setStoryPhoto] = useState(null);
   const [photoPreviewVisible, setPhotoPreviewVisible] = useState(false);
   const userToken = useSelector((state) => state.user.value.token);
@@ -184,7 +183,6 @@ export default function GeneralScreen({ navigation }) {
           userToken={user.token}
           currentUsername={user.username}
           currentUserPic={user.profilPicture}
-          refreshKey={refreshKey}
           navigation={navigation}
           onRefresh={() => {
             fetch(`${backendAdress}/posts`)
